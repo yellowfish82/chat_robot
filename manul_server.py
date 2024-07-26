@@ -5,13 +5,15 @@ import ollama
 import pyttsx3
 
 # 指定要监控的目录
-monitor_directory = "/Users/terry/exercise/ai/chat_ai/chat_ai_client/records"  # 修改为你的目录路径
+monitor_directory = "/home/terry/exercise/ai/chat_robot/records"  # 修改为你的目录路径
 
 # 初始化上一次检查的文件集合
 last_files = set(os.listdir(monitor_directory))
 
 # Initialize Whisper model in CPU mode
-model = whisper.load_model("base", device="cpu")
+# model = whisper.load_model("base", device="cpu")
+
+model = whisper.load_model("base")
 engine = pyttsx3.init()
 
 def check_new_files(directory):
@@ -52,8 +54,8 @@ def robot_speak(content):
     volume = engine.getProperty('volume')
     engine.setProperty('rate', 120)  # 语速
     engine.setProperty('volume', volume + 0.25)  # 音量
-    engine.setProperty('voice', 'com.apple.voice.compact.zh-TW.Meijia') #台湾
-    # engine.setProperty('voice', 'com.apple.voice.compact.zh-CN.Tingting') #大陆
+    # engine.setProperty('voice', 'com.apple.voice.compact.zh-TW.Meijia') #台湾
+    engine.setProperty('voice', 'com.apple.voice.compact.zh-CN.Tingting') #大陆
     # engine.setProperty('voice', 'com.apple.voice.compact.zh-HK.Sinji') #粤语
 
     engine.say(content)
