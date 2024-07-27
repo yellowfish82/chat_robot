@@ -74,6 +74,11 @@ sudo docker run -d -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/o
 sudo docker exec -it ollama ollama run llama3
 
 ```
+
+# install llama3.1
+sudo docker exec -it ollama ollama run llama3.1
+
+```
 - troble shooting
 
     if the ollama docker image can not be pulled, change the repositry mirro

@@ -5,7 +5,8 @@ import ollama
 import pyttsx3
 
 # 指定要监控的目录
-monitor_directory = "/home/terry/exercise/ai/chat_robot/records"  # 修改为你的目录路径
+monitor_directory = "./records"  # 修改为你的目录路径
+llm_model = "llama3.1"
 
 # 初始化上一次检查的文件集合
 last_files = set(os.listdir(monitor_directory))
@@ -43,7 +44,7 @@ def whisper2text(file_name):
     return content
 
 def robotChat(prompt):
-    response = ollama.generate(model='llama3', prompt=prompt)
+    response = ollama.generate(model=llm_model, prompt=prompt)
     answer = response['response']
     print(answer)
 
