@@ -6,8 +6,8 @@ import pyttsx3
 import ChatTTS
 import torch
 import torchaudio
-import pyaudio
-import wave
+import soundfile as sf
+import sounddevice as sd
 
 # 指定要监控的目录
 monitor_directory = "./records"  # 修改为你的目录路径
@@ -22,7 +22,6 @@ last_files = set(os.listdir(monitor_directory))
 
 model = whisper.load_model("base")
 engine = pyttsx3.init()
-player = pyaudio.PyAudio()
 
 def check_new_files(directory):
     # 获取当前目录下的所有文件
@@ -86,31 +85,9 @@ def speak_ChatTTS(content, ask_file_name):
     
 def play_wav(file_path):
     print(file_path)
-    # Open the WAV file
-    wf = wave.open(file_path, 'rb')
-
-    # Create a PyAudio instance
-    p = pyaudio.PyAudio()
-
-    # Open a stream
-    stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
-                    channels=wf.getnchannels(),
-                    rate=wf.getframerate(),
-                    output=True)
-
-    # Read data in chunks
-    chunk_size = 1024
-    data = wf.readframes(chunk_size)
-
-    # Play the sound by writing the audio data to the stream
-    while data:
-        stream.write(data)
-        data = wf.readframes(chunk_size)
-
-    # Close the stream and PyAudio instance
-    stream.stop_stream()
-    stream.close()
-    p.terminate()
+    data, samplerate = sf.read(file_path)
+    sd.play(data, samplerate)
+    sd.wait()
 
 # 启动服务循环
 counter = 0

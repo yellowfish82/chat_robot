@@ -132,7 +132,7 @@ pip install ChatTTS
     - raise Error('unknown format: %r' % (wFormatTag,)) wave.Error: unknown format: 3
 
     ```
-    
+    pip install sounddevice
 
     ```
 
