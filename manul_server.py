@@ -13,6 +13,7 @@ import sounddevice as sd
 monitor_directory = "./records"  # 修改为你的目录路径
 chat_reply_directory = "./robot_reply"  # 修改为你的目录路径
 llm_model = "llama3.1"
+limit_content = "请不要用列表的方式进行回答。回答内容要纯文本，不要任何格式，不要出现星号，序号等。"
 
 # 初始化上一次检查的文件集合
 last_files = set(os.listdir(monitor_directory))
@@ -50,7 +51,7 @@ def whisper2text(file_name):
     return content
 
 def robotChat(prompt):
-    response = ollama.generate(model=llm_model, prompt=prompt)
+    response = ollama.generate(model=llm_model, prompt=prompt+limit_content)
     answer = response['response']
     print(answer)
 
