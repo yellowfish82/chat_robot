@@ -113,13 +113,28 @@ pip install ChatTTS
 ```
 
 - trouble shooting
-OSError: libespeak.so.1: cannot open shared object file: No such file or directory
 
-```
-sudo apt install espeak
+    - OSError: libespeak.so.1: cannot open shared object file: No such file or directory
 
-```
+    ```
+    sudo apt install espeak
 
+    ```
+
+
+    - raise RuntimeError(f"Couldn't find appropriate backend to handle uri {uri} and format {format}."
+
+    ```
+    pip install soundfile
+
+    ```
+
+    - raise Error('unknown format: %r' % (wFormatTag,)) wave.Error: unknown format: 3
+
+    ```
+    
+
+    ```
 
 ### others
 install audio player on ubuntu

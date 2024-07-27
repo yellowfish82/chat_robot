@@ -6,9 +6,12 @@ import pyttsx3
 import ChatTTS
 import torch
 import torchaudio
+import pyaudio
+import wave
 
 # 指定要监控的目录
 monitor_directory = "./records"  # 修改为你的目录路径
+chat_reply_directory = "./robot_reply"  # 修改为你的目录路径
 llm_model = "llama3.1"
 
 # 初始化上一次检查的文件集合
@@ -19,6 +22,7 @@ last_files = set(os.listdir(monitor_directory))
 
 model = whisper.load_model("base")
 engine = pyttsx3.init()
+player = pyaudio.PyAudio()
 
 def check_new_files(directory):
     # 获取当前目录下的所有文件
@@ -31,7 +35,7 @@ def check_new_files(directory):
         for file in new_files:
             q = whisper2text(file)
             a = robotChat(q)
-            robot_speak(a)
+            robot_speak(a, file)
         # 更新last_files为当前文件集合
         last_files = current_files
 
@@ -53,9 +57,9 @@ def robotChat(prompt):
 
     return answer
 
-def robot_speak(content):
+def robot_speak(content, ask_file_name):
     # speak_pytts(content)
-    speak_ChatTTS(content)
+    speak_ChatTTS(content, ask_file_name)
 
 
 def speak_pytts(content):
@@ -70,14 +74,43 @@ def speak_pytts(content):
     engine.say(content)
     engine.runAndWait()
 
-def speak_ChatTTS(content):
+def speak_ChatTTS(content, ask_file_name):
     chat = ChatTTS.Chat()
     chat.load(compile=False)
     wavs = chat.infer([content])
 
     for i in range(len(wavs)):
-        torchaudio.save(f"basic_output{i}.wav", torch.from_numpy(wavs[i]), 24000)
+        reply_file_name = f"{chat_reply_directory}/reply{i}_{ask_file_name}"
+        torchaudio.save(reply_file_name, torch.from_numpy(wavs[i]), 24000)
+        play_wav(reply_file_name)
+    
+def play_wav(file_path):
+    print(file_path)
+    # Open the WAV file
+    wf = wave.open(file_path, 'rb')
 
+    # Create a PyAudio instance
+    p = pyaudio.PyAudio()
+
+    # Open a stream
+    stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
+                    channels=wf.getnchannels(),
+                    rate=wf.getframerate(),
+                    output=True)
+
+    # Read data in chunks
+    chunk_size = 1024
+    data = wf.readframes(chunk_size)
+
+    # Play the sound by writing the audio data to the stream
+    while data:
+        stream.write(data)
+        data = wf.readframes(chunk_size)
+
+    # Close the stream and PyAudio instance
+    stream.stop_stream()
+    stream.close()
+    p.terminate()
 
 # 启动服务循环
 counter = 0

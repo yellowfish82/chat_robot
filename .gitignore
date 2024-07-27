@@ -134,3 +134,4 @@ records/*
 **.DS_Store
 **/**.DS_Store
 asset/*
+robot_reply/*
