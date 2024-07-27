@@ -60,8 +60,21 @@ pip install -U openai-whisper
 
     ```
 
+    - Configure Docker to use Nvidia driver
+    ```
+    sudo nvidia-ctk runtime configure --runtime=docker
+    sudo systemctl restart docker
+
+    ```
+
 ```
 sudo docker run -d -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
+
+# install llama3
+sudo docker exec -it ollama ollama run llama3
+
+# install llama3.1
+sudo docker exec -it ollama ollama run llama3.1
 
 ```
 - troble shooting
@@ -82,13 +95,31 @@ sudo docker run -d -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/o
     #check change success or not
     sudo docker info
     ```
+- install ollama-python
+```
+pip install ollama
+```
 
 
-
-### 4. install pyttsx3
+### 4. install TTS
+- pyttsx3
 ```
 pip install pyttsx3
 ```
+
+- ChatTTS
+```
+pip install ChatTTS
+```
+
+- trouble shooting
+OSError: libespeak.so.1: cannot open shared object file: No such file or directory
+
+```
+sudo apt install espeak
+
+```
+
 
 ### others
 install audio player on ubuntu
