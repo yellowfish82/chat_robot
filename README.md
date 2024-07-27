@@ -101,9 +101,15 @@ pip install ollama
 ```
 
 
-### 4. install pyttsx3
+### 4. install TTS
+- pyttsx3
 ```
 pip install pyttsx3
+```
+
+- ChatTTS
+```
+pip install ChatTTS
 ```
 
 - trouble shooting
