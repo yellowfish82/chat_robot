@@ -1,3 +1,8 @@
+print("服务初始化启动……")
+from datetime import datetime
+
+server_start = datetime.now()
+
 import os
 import time
 import whisper
@@ -8,7 +13,6 @@ import torch
 import torchaudio
 import soundfile as sf
 import sounddevice as sd
-from datetime import datetime
 
 # 指定要监控的目录
 monitor_directory = "./records"  # 修改为你的目录路径
@@ -38,12 +42,16 @@ def check_new_chat(directory):
         print("检测到有新的对话")
         for file in new_files:
             start_time = datetime.now()
+
             q = whisper2text(file)
             after_audio_cognitive_time = datetime.now()
+
             a = robotChat(q)
             after_AI_thinking = datetime.now()
+
             robot_speak(a, file)
             after_AI_reply_audio_time = datetime.now()
+
             report_time_takes(
                 start_time,
                 after_audio_cognitive_time,
@@ -56,7 +64,7 @@ def check_new_chat(directory):
 
 def whisper2text(file_name):
     absolute_path = os.path.abspath(os.path.join(monitor_directory, file_name))
-    print(f"using whisper processing the file: {absolute_path}")
+    print(f"开始使用speech recognition模型识别您的对话……")
     result = model.transcribe(absolute_path, fp16=False)
 
     content = result["text"]
@@ -104,7 +112,7 @@ def speak_ChatTTS(content, ask_file_name):
 
 
 def play_wav(file_path):
-    print(file_path)
+    # print(file_path)
     data, samplerate = sf.read(file_path)
     sd.play(data, samplerate)
     sd.wait()
@@ -115,10 +123,12 @@ def report_time_takes(s, audio_cognitivie, ai_think, ai_reply):
     audio_cognitivie_cost = cal_interval(s, audio_cognitivie)
     ai_thinking_cost = cal_interval(audio_cognitivie, ai_think)
     ai_reply_cost = cal_interval(ai_think, ai_reply)
-    
-    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-    print(f'共耗时：{total_interval}(语音识别：{audio_cognitivie_cost}, AI思考：{ai_thinking_cost}, AI回复：{ai_reply_cost})')
-    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    print(
+        f"共耗时：{total_interval}(语音识别：{audio_cognitivie_cost}, AI思考：{ai_thinking_cost}, AI回复：{ai_reply_cost})"
+    )
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
 
 def cal_interval(start, end):
@@ -136,9 +146,11 @@ def cal_interval(start, end):
 # 启动服务循环
 counter = 0
 try:
+    server_launch_info = cal_interval(server_start, datetime.now())
+    print(f"服务已启动(服务启动耗时：{server_launch_info})")
     while True:
         counter = counter + 1
-        print(f"第{counter}轮，监听收否有人和我说话……")
+        print(f"第{counter}轮，监听有没有人和我说话……")
         check_new_chat(monitor_directory)
         time.sleep(5)  # 等待5秒
 except KeyboardInterrupt:
