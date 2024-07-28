@@ -24,7 +24,7 @@ last_files = set(os.listdir(monitor_directory))
 # Initialize Whisper model in CPU mode
 # model = whisper.load_model("base", device="cpu")
 
-model = whisper.load_model("base")
+model = whisper.load_model("large-v3")
 engine = pyttsx3.init()
 
 
@@ -117,7 +117,7 @@ def report_time_takes(s, audio_cognitivie, ai_think, ai_reply):
     ai_reply_cost = cal_interval(ai_think, ai_reply)
     
     print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-    print(f'共耗時：{total_interval}(語音識別：{audio_cognitivie_cost}, AI思考：{ai_thinking_cost}, AI回覆：{ai_reply_cost})')
+    print(f'共耗时：{total_interval}(语音识别：{audio_cognitivie_cost}, AI思考：{ai_thinking_cost}, AI回复：{ai_reply_cost})')
     print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 
 
