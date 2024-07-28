@@ -13,7 +13,9 @@ import sounddevice as sd
 monitor_directory = "./records"  # 修改为你的目录路径
 chat_reply_directory = "./robot_reply"  # 修改为你的目录路径
 llm_model = "llama3.1"
-limit_content = "请不要用列表的方式进行回答。回答内容要纯文本，不要任何格式，不要出现星号，序号等。"
+limit_content = (
+    "请不要用列表的方式进行回答。回答内容要纯文本，不要任何格式，不要出现星号，序号等。"
+)
 
 # 初始化上一次检查的文件集合
 last_files = set(os.listdir(monitor_directory))
@@ -21,8 +23,9 @@ last_files = set(os.listdir(monitor_directory))
 # Initialize Whisper model in CPU mode
 # model = whisper.load_model("base", device="cpu")
 
-model = whisper.load_model("base")
+model = whisper.load_model("large-v3")
 engine = pyttsx3.init()
+
 
 def check_new_files(directory):
     # 获取当前目录下的所有文件
@@ -39,6 +42,7 @@ def check_new_files(directory):
         # 更新last_files为当前文件集合
         last_files = current_files
 
+
 def whisper2text(file_name):
     absolute_path = os.path.abspath(os.path.join(monitor_directory, file_name))
     print(f"using whisper processing the file: {absolute_path}")
@@ -50,12 +54,14 @@ def whisper2text(file_name):
 
     return content
 
+
 def robotChat(prompt):
-    response = ollama.generate(model=llm_model, prompt=prompt+limit_content)
-    answer = response['response']
+    response = ollama.generate(model=llm_model, prompt=prompt + limit_content)
+    answer = response["response"]
     print(answer)
 
     return answer
+
 
 def robot_speak(content, ask_file_name):
     # speak_pytts(content)
@@ -63,16 +69,17 @@ def robot_speak(content, ask_file_name):
 
 
 def speak_pytts(content):
-    # rate = engine.getProperty('rate')   
-    volume = engine.getProperty('volume')
-    engine.setProperty('rate', 120)  # 语速
-    engine.setProperty('volume', volume + 0.25)  # 音量
+    # rate = engine.getProperty('rate')
+    volume = engine.getProperty("volume")
+    engine.setProperty("rate", 120)  # 语速
+    engine.setProperty("volume", volume + 0.25)  # 音量
     # engine.setProperty('voice', 'com.apple.voice.compact.zh-TW.Meijia') #台湾
-    engine.setProperty('voice', 'com.apple.voice.compact.zh-CN.Tingting') #大陆
+    engine.setProperty("voice", "com.apple.voice.compact.zh-CN.Tingting")  # 大陆
     # engine.setProperty('voice', 'com.apple.voice.compact.zh-HK.Sinji') #粤语
 
     engine.say(content)
     engine.runAndWait()
+
 
 def speak_ChatTTS(content, ask_file_name):
     chat = ChatTTS.Chat()
@@ -83,12 +90,14 @@ def speak_ChatTTS(content, ask_file_name):
         reply_file_name = f"{chat_reply_directory}/reply{i}_{ask_file_name}"
         torchaudio.save(reply_file_name, torch.from_numpy(wavs[i]), 24000)
         play_wav(reply_file_name)
-    
+
+
 def play_wav(file_path):
     print(file_path)
     data, samplerate = sf.read(file_path)
     sd.play(data, samplerate)
     sd.wait()
+
 
 # 启动服务循环
 counter = 0
