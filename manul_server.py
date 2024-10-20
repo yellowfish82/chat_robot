@@ -75,6 +75,7 @@ def whisper2text(file_name):
 
 
 def robotChat(prompt):
+    print(f"开始思考您的问题……")
     response = ollama.generate(model=llm_model, prompt=prompt + limit_content)
     answer = response["response"]
     print(answer)
